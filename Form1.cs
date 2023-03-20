@@ -35,6 +35,16 @@ namespace GeoSpatialData
             InitializeComponent();
         }
 
+        private void ReadDataGrid()
+        {
+            // Data grid
+            this.bindingSource = new BindingSource();
+            dataGrid.DataSource = this.bindingSource;
+
+            var results = this.collectionCities.Find<Cities>(Builders<Cities>.Filter.Empty).ToList();
+            this.bindingSource.DataSource = results;
+        }
+
         private void Form1_Load(object sender, EventArgs e)
         {
             // Setting up map instance
@@ -52,12 +62,7 @@ namespace GeoSpatialData
             this.db = client.GetDatabase(this.databaseName);
             this.collectionCities = db.GetCollection<Cities>(this.collectionNameCities);
 
-            // Data grid
-            this.bindingSource = new BindingSource();
-            dataGrid.DataSource = this.bindingSource;
-
-            var results = this.collectionCities.Find<Cities>(Builders<Cities>.Filter.Empty).ToList();
-            this.bindingSource.DataSource = results;
+            this.ReadDataGrid();
         }
 
         // Update (CRUD)
@@ -66,8 +71,17 @@ namespace GeoSpatialData
             var updatedRow = dataGrid.Rows[e.RowIndex];
             var id = updatedRow.Cells["Id"].Value;
             var filter = Builders<Cities>.Filter.Eq(city => city.Id, id);
-            var update = Builders<Cities>.Update.Set(city => city.Lat, updatedRow.Cells["Lat"].Value);
+            var update = Builders<Cities>.Update.Set(city => city.City, updatedRow.Cells["City"].Value)
+                                                .Set(city => city.Lat, updatedRow.Cells["Lat"].Value)
+                                                .Set(city => city.Lng, updatedRow.Cells["Lng"].Value)
+                                                .Set(city => city.Country, updatedRow.Cells["Country"].Value)
+                                                .Set(city => city.Iso2, updatedRow.Cells["Iso2"].Value)
+                                                .Set(city => city.AdminName, updatedRow.Cells["AdminName"].Value)
+                                                .Set(city => city.Capital, updatedRow.Cells["Capital"].Value)
+                                                .Set(city => city.Population, updatedRow.Cells["Population"].Value)
+                                                .Set(city => city.PopulationProper, updatedRow.Cells["PopulationProper"].Value);
             this.collectionCities.UpdateOne(filter, update);
+            this.ReadDataGrid();
         }
 
         // Delete (CRUD)
@@ -76,6 +90,7 @@ namespace GeoSpatialData
             var updatedRow = e.Row;
             var id = updatedRow.Cells["Id"].Value;
             this.collectionCities.DeleteOne(city => city.Id == id.ToString());
+            this.ReadDataGrid();
         }
     }
 }
