@@ -68,6 +68,7 @@ namespace GeoSpatialData
             this.dataGrid.Size = new System.Drawing.Size(379, 218);
             this.dataGrid.TabIndex = 1;
             this.dataGrid.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGrid_CellValueChanged);
+            this.dataGrid.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.dataGrid_UserDeletingRow);
             // 
             // Form1
             // 

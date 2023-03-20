@@ -69,5 +69,13 @@ namespace GeoSpatialData
             var update = Builders<Cities>.Update.Set(city => city.Lat, updatedRow.Cells["Lat"].Value);
             this.collectionCities.UpdateOne(filter, update);
         }
+
+        // Delete (CRUD)
+        private void dataGrid_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
+        {
+            var updatedRow = e.Row;
+            var id = updatedRow.Cells["Id"].Value;
+            this.collectionCities.DeleteOne(city => city.Id == id.ToString());
+        }
     }
 }
