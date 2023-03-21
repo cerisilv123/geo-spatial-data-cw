@@ -58,14 +58,14 @@ namespace GeoSpatialData
         }
 
         // Plots Point on to Map
-        private void PlotPoint(string lat, string lng)
+        private void PlotPoint(string lat, string lng, GMarkerGoogleType pin)
         {
             // Setting map position to coords passed in as arguments
             Map.Position = new PointLatLng(Convert.ToDouble(lat), Convert.ToDouble(lng));
             GMapOverlay markers = new GMapOverlay("markers");
             GMapMarker marker = new GMarkerGoogle(
                      new PointLatLng(Convert.ToDouble(lat), Convert.ToDouble(lng)),
-                     GMarkerGoogleType.green_pushpin);
+                    pin);
             markers.Markers.Add(marker);
             Map.Overlays.Add(markers);
             Map.ZoomAndCenterMarkers("markers");
@@ -122,12 +122,45 @@ namespace GeoSpatialData
         {
             var clickedRow = dataGrid.Rows[e.RowIndex];
             var lat = clickedRow.Cells["Lat"].Value;
-            var lng = clickedRow.Cells["lng"].Value;
-            this.PlotPoint(lat.ToString(), lng.ToString());
+            var lng = clickedRow.Cells["Lng"].Value;
+            GMarkerGoogleType pin = GMarkerGoogleType.green_pushpin;
+            this.PlotPoint(lat.ToString(), lng.ToString(), pin);
+        }
+
+        // Read One record when user enters city name(CRUD) and plot to map
+        private void buttonSearchCity_Click(object sender, EventArgs e)
+        {
+            string input = textBoxSearchCity.Text.ToString();
+            var cityResult = this.collectionCities.Find(city => city.City == input.ToString()).FirstOrDefault();
+            if (cityResult != null)
+            {
+                // Getting lng and lat to update Map Markers
+                string lat = cityResult.Lat;
+                string lng = cityResult.Lng;
+                GMarkerGoogleType pin = GMarkerGoogleType.orange_dot;
+                this.PlotPoint(lat, lng, pin);
+
+                // Updating datagrid to have the correct city selected for what user searched
+                int index = -1;
+                foreach(DataGridViewRow row in dataGrid.Rows)
+                {
+                    if (row.Cells[2].Value.ToString() == lat && row.Cells[3].Value.ToString() == lng)
+                    {
+                        index = row.Index;
+                        break;
+                    }
+                }
+
+                // If city was not found keep the same selection on grid
+                if (index != -1)
+                {
+                    dataGrid.CurrentCell = dataGrid.Rows[index].Cells[1];
+                }
+            }
         }
 
         // Remove Pin from Map by Clicking on Pin (on map)
-        private void Map_OnMarkerClick(GMapMarker item, MouseEventArgs e)
+        private void Map_OnMarkerDoubleClick(GMapMarker item, MouseEventArgs e)
         {
             // Finding overlay that contains the marker clicked so that it can be removed
             GMapOverlay overlay = Map.Overlays.FirstOrDefault(overl => overl.Markers.Contains(item));
@@ -136,7 +169,24 @@ namespace GeoSpatialData
             if (overlay != null)
             {
                 overlay.Markers.Remove(item);
-            } 
+            }
+        }
+
+        // View Data of Location by clicking on Pin from Map by Clicking on Pin
+        private void Map_OnMarkerClick(GMapMarker item, MouseEventArgs e)
+        {
+            // Getting coords of pin
+            string lat = item.Position.Lat.ToString();
+            string lng = item.Position.Lng.ToString();
+
+            // Creating query to search mongo db collection for city with same lat and lng
+            var filter = Builders<Cities>.Filter.Eq(city => city.Lat, lat) & Builders<Cities>.Filter.Eq(city => city.Lng, lng);
+            var cityResult = this.collectionCities.Find(filter).FirstOrDefault();
+            if (cityResult != null)
+            {
+                // Creating text box near pin displaying details
+                item.ToolTipText = cityResult.City.ToString();
+            }
         }
     }
 }

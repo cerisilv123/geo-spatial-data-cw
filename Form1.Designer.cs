@@ -31,6 +31,9 @@ namespace GeoSpatialData
         {
             this.Map = new GMap.NET.WindowsForms.GMapControl();
             this.dataGrid = new System.Windows.Forms.DataGridView();
+            this.buttonSearchCity = new System.Windows.Forms.Button();
+            this.textBoxSearchCity = new System.Windows.Forms.TextBox();
+            this.labelSearchInfo = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGrid)).BeginInit();
             this.SuspendLayout();
             // 
@@ -60,6 +63,7 @@ namespace GeoSpatialData
             this.Map.TabIndex = 0;
             this.Map.Zoom = 0D;
             this.Map.OnMarkerClick += new GMap.NET.WindowsForms.MarkerClick(this.Map_OnMarkerClick);
+            this.Map.OnMarkerDoubleClick += new GMap.NET.WindowsForms.MarkerDoubleClick(this.Map_OnMarkerDoubleClick);
             // 
             // dataGrid
             // 
@@ -72,11 +76,39 @@ namespace GeoSpatialData
             this.dataGrid.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGrid_CellValueChanged);
             this.dataGrid.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.dataGrid_UserDeletingRow);
             // 
+            // buttonSearchCity
+            // 
+            this.buttonSearchCity.Location = new System.Drawing.Point(604, 239);
+            this.buttonSearchCity.Name = "buttonSearchCity";
+            this.buttonSearchCity.Size = new System.Drawing.Size(75, 23);
+            this.buttonSearchCity.TabIndex = 2;
+            this.buttonSearchCity.Text = "Search";
+            this.buttonSearchCity.UseVisualStyleBackColor = true;
+            this.buttonSearchCity.Click += new System.EventHandler(this.buttonSearchCity_Click);
+            // 
+            // textBoxSearchCity
+            // 
+            this.textBoxSearchCity.Location = new System.Drawing.Point(413, 239);
+            this.textBoxSearchCity.Name = "textBoxSearchCity";
+            this.textBoxSearchCity.Size = new System.Drawing.Size(185, 20);
+            this.textBoxSearchCity.TabIndex = 3;
+            // 
+            // labelSearchInfo
+            // 
+            this.labelSearchInfo.AutoSize = true;
+            this.labelSearchInfo.Location = new System.Drawing.Point(410, 274);
+            this.labelSearchInfo.Name = "labelSearchInfo";
+            this.labelSearchInfo.Size = new System.Drawing.Size(0, 13);
+            this.labelSearchInfo.TabIndex = 4;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.labelSearchInfo);
+            this.Controls.Add(this.textBoxSearchCity);
+            this.Controls.Add(this.buttonSearchCity);
             this.Controls.Add(this.dataGrid);
             this.Controls.Add(this.Map);
             this.Name = "Form1";
@@ -84,6 +116,7 @@ namespace GeoSpatialData
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGrid)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -91,6 +124,9 @@ namespace GeoSpatialData
 
         private GMap.NET.WindowsForms.GMapControl Map;
         private System.Windows.Forms.DataGridView dataGrid;
+        private System.Windows.Forms.Button buttonSearchCity;
+        private System.Windows.Forms.TextBox textBoxSearchCity;
+        private System.Windows.Forms.Label labelSearchInfo;
     }
 }
 
