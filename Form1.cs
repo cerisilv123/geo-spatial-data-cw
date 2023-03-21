@@ -35,21 +35,12 @@ namespace GeoSpatialData
             InitializeComponent();
         }
 
-        private void ReadDataGrid()
-        {
-            // Data grid
-            this.bindingSource = new BindingSource();
-            dataGrid.DataSource = this.bindingSource;
-
-            var results = this.collectionCities.Find<Cities>(Builders<Cities>.Filter.Empty).ToList();
-            this.bindingSource.DataSource = results;
-        }
-
         private void Form1_Load(object sender, EventArgs e)
         {
             // Setting up map instance
             Map.MapProvider = GMap.NET.MapProviders.GoogleMapProvider.Instance;
             GMaps.Instance.Mode = AccessMode.ServerOnly;
+            Map.AutoSize = true;
             Map.ShowCenter = false;
 
             // MongoDB Database Details(Atlas)
@@ -62,12 +53,40 @@ namespace GeoSpatialData
             this.db = client.GetDatabase(this.databaseName);
             this.collectionCities = db.GetCollection<Cities>(this.collectionNameCities);
 
+            // Reading data grid values to get updated values
             this.ReadDataGrid();
+        }
+
+        // Plots Point on to Map
+        private void PlotPoint(string lat, string lng)
+        {
+            // Setting map position to coords passed in as arguments
+            Map.Position = new PointLatLng(Convert.ToDouble(lat), Convert.ToDouble(lng));
+            GMapOverlay markers = new GMapOverlay("markers");
+            GMapMarker marker = new GMarkerGoogle(
+                     new PointLatLng(Convert.ToDouble(lat), Convert.ToDouble(lng)),
+                     GMarkerGoogleType.green_pushpin);
+            markers.Markers.Add(marker);
+            Map.Overlays.Add(markers);
+            Map.ZoomAndCenterMarkers("markers");
+        }
+
+        // Read (CRUD)
+        private void ReadDataGrid()
+        {
+            // Data grid
+            this.bindingSource = new BindingSource();
+            dataGrid.DataSource = this.bindingSource;
+
+            // Getting all results from collection and binding to data grid
+            var results = this.collectionCities.Find<Cities>(Builders<Cities>.Filter.Empty).ToList();
+            this.bindingSource.DataSource = results;
         }
 
         // Update (CRUD)
         private void dataGrid_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
+            // Getting index of data grid row that has been updated
             var updatedRow = dataGrid.Rows[e.RowIndex];
             var id = updatedRow.Cells["Id"].Value;
             var filter = Builders<Cities>.Filter.Eq(city => city.Id, id);
@@ -81,16 +100,43 @@ namespace GeoSpatialData
                                                 .Set(city => city.Population, updatedRow.Cells["Population"].Value)
                                                 .Set(city => city.PopulationProper, updatedRow.Cells["PopulationProper"].Value);
             this.collectionCities.UpdateOne(filter, update);
+            
+            // Reading data grid values to get updated values
             this.ReadDataGrid();
         }
 
         // Delete (CRUD)
         private void dataGrid_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
         {
+            // Getting index of data grid row that is being deleted
             var updatedRow = e.Row;
             var id = updatedRow.Cells["Id"].Value;
             this.collectionCities.DeleteOne(city => city.Id == id.ToString());
+
+            // Reading data grid values to get updated values
             this.ReadDataGrid();
+        }
+
+        // Add Pin to Map by clicking on DataGrid row
+        private void dataGrid_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            var clickedRow = dataGrid.Rows[e.RowIndex];
+            var lat = clickedRow.Cells["Lat"].Value;
+            var lng = clickedRow.Cells["lng"].Value;
+            this.PlotPoint(lat.ToString(), lng.ToString());
+        }
+
+        // Remove Pin from Map by Clicking on Pin (on map)
+        private void Map_OnMarkerClick(GMapMarker item, MouseEventArgs e)
+        {
+            // Finding overlay that contains the marker clicked so that it can be removed
+            GMapOverlay overlay = Map.Overlays.FirstOrDefault(overl => overl.Markers.Contains(item));
+
+            // Checking to make sure an overlay exists
+            if (overlay != null)
+            {
+                overlay.Markers.Remove(item);
+            } 
         }
     }
 }

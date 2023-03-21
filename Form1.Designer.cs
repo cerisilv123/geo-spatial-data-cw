@@ -44,7 +44,7 @@ namespace GeoSpatialData
             this.Map.LevelsKeepInMemory = 5;
             this.Map.Location = new System.Drawing.Point(1, 1);
             this.Map.MarkersEnabled = true;
-            this.Map.MaxZoom = 2;
+            this.Map.MaxZoom = 10;
             this.Map.MinZoom = 2;
             this.Map.MouseWheelZoomEnabled = true;
             this.Map.MouseWheelZoomType = GMap.NET.MouseWheelZoomType.MousePositionAndCenter;
@@ -59,6 +59,7 @@ namespace GeoSpatialData
             this.Map.Size = new System.Drawing.Size(396, 449);
             this.Map.TabIndex = 0;
             this.Map.Zoom = 0D;
+            this.Map.OnMarkerClick += new GMap.NET.WindowsForms.MarkerClick(this.Map_OnMarkerClick);
             // 
             // dataGrid
             // 
@@ -67,6 +68,7 @@ namespace GeoSpatialData
             this.dataGrid.Name = "dataGrid";
             this.dataGrid.Size = new System.Drawing.Size(379, 218);
             this.dataGrid.TabIndex = 1;
+            this.dataGrid.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGrid_CellContentClick);
             this.dataGrid.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGrid_CellValueChanged);
             this.dataGrid.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.dataGrid_UserDeletingRow);
             // 
