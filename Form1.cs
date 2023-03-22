@@ -11,6 +11,7 @@ using GMap.NET;
 using GMap.NET.WindowsForms.Markers;
 using GMap.NET.MapProviders;
 using GMap.NET.WindowsForms;
+using GMap.NET.WindowsForms.ToolTips;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
@@ -31,6 +32,9 @@ namespace GeoSpatialData
 
         // Data Grid
         BindingSource bindingSource;
+
+        // Map
+        GMapOverlay mapRouteOverlay;
 
         public Form1()
         {
@@ -187,7 +191,7 @@ namespace GeoSpatialData
 
             if (currentCollectionName == "Cities")
             {
-                pin = GMarkerGoogleType.green_pushpin;
+                pin = GMarkerGoogleType.green_dot;
             }
             else if (currentCollectionName == "Shipwrecks")
             {
@@ -317,21 +321,58 @@ namespace GeoSpatialData
             textBoxLat2.Text = "";
             textBoxLng1.Text = "";
             textBoxLng2.Text = "";
+            textBoxDistance.Text = "";
+
+            GMapOverlay routeOverlay = null;
+            foreach (GMapOverlay overlay in Map.Overlays)
+            {
+                if (overlay.Id == "Routes")
+                {
+                    routeOverlay = overlay;
+                    break;
+                }
+            }
+
+            double zoom = Map.Zoom;
+            if (routeOverlay != null)
+            {
+                // Remove route
+                Map.Overlays.Remove(routeOverlay);
+                Map.Zoom = -2;
+                Map.Zoom = 2;
+
+                // Refreshing map so route isn't visible
+                Map.Zoom = zoom;
+            }
         }
 
         private void buttonCalculateDistance_Click(object sender, EventArgs e)
         {
             if (textBoxLat1.Text != "" && textBoxLat2.Text != "" && textBoxLng1.Text != "" && textBoxLng2.Text != "")
             {
+                // Calculating Distance
                 double lat1 = Double.Parse(textBoxLat1.Text);
                 double lng1 = Double.Parse(textBoxLng1.Text);
                 double lat2 = Double.Parse(textBoxLat2.Text);
                 double lng2 = Double.Parse(textBoxLng2.Text);
 
-                double calculatedDistance = this.calculateDistanceBetweenCoords(lat1, lng1, lat2, lng2);
+                double calculatedDistance = this.calculateDistanceBetweenCoords(lat1, lat2, lng1, lng2);
 
+                // Displaying info to GUI
                 textBoxDistance.Text = "Distance from coords 1 -> 2 = ";
-                textBoxDistance.Text += calculatedDistance.ToString();     
+                textBoxDistance.Text += calculatedDistance.ToString();
+                textBoxDistance.Text += "km";
+
+                // Drawing Route Overlay on map
+                this.mapRouteOverlay = new GMapOverlay("Routes");
+                List<PointLatLng> coords = new List<PointLatLng>();
+                coords.Add(new PointLatLng(lat1, lng1));
+                coords.Add(new PointLatLng(lat2, lng2));
+                GMapRoute route = new GMapRoute(coords, "Route Test");
+                route.Stroke = new Pen(Color.Salmon, 5);
+                mapRouteOverlay.Routes.Add(route);
+                Map.Overlays.Add(mapRouteOverlay);
+                Map.UpdateRouteLocalPosition(route);
             }
         }
     }
