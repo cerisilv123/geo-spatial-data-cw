@@ -7,11 +7,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using MongoDB.Driver;
 using GMap.NET;
 using GMap.NET.WindowsForms.Markers;
 using GMap.NET.MapProviders;
 using GMap.NET.WindowsForms;
+using MongoDB.Bson;
+using MongoDB.Driver;
 
 namespace GeoSpatialData
 {
@@ -56,6 +57,7 @@ namespace GeoSpatialData
 
             // Reading data grid values to get updated values
             this.ReadDataGrid();
+            buttonCities.BackColor = Color.Green;
         }
 
         // Plots Point on to Map
@@ -99,17 +101,36 @@ namespace GeoSpatialData
             // Getting index of data grid row that has been updated
             var updatedRow = dataGrid.Rows[e.RowIndex];
             var id = updatedRow.Cells["Id"].Value;
-            var filter = Builders<Cities>.Filter.Eq(city => city.Id, id);
-            var update = Builders<Cities>.Update.Set(city => city.City, updatedRow.Cells["City"].Value)
-                                                .Set(city => city.Lat, updatedRow.Cells["Lat"].Value)
-                                                .Set(city => city.Lng, updatedRow.Cells["Lng"].Value)
-                                                .Set(city => city.Country, updatedRow.Cells["Country"].Value)
-                                                .Set(city => city.Iso2, updatedRow.Cells["Iso2"].Value)
-                                                .Set(city => city.AdminName, updatedRow.Cells["AdminName"].Value)
-                                                .Set(city => city.Capital, updatedRow.Cells["Capital"].Value)
-                                                .Set(city => city.Population, updatedRow.Cells["Population"].Value)
-                                                .Set(city => city.PopulationProper, updatedRow.Cells["PopulationProper"].Value);
-            this.collectionCities.UpdateOne(filter, update);
+
+            if (this.currentCollectionName == "Cities")
+            {
+                var filter = Builders<Cities>.Filter.Eq(city => city.Id, id);
+                var update = Builders<Cities>.Update.Set(city => city.City, updatedRow.Cells["City"].Value)
+                                                    .Set(city => city.Lat, updatedRow.Cells["Lat"].Value)
+                                                    .Set(city => city.Lng, updatedRow.Cells["Lng"].Value)
+                                                    .Set(city => city.Country, updatedRow.Cells["Country"].Value)
+                                                    .Set(city => city.Iso2, updatedRow.Cells["Iso2"].Value)
+                                                    .Set(city => city.AdminName, updatedRow.Cells["AdminName"].Value)
+                                                    .Set(city => city.Capital, updatedRow.Cells["Capital"].Value)
+                                                    .Set(city => city.Population, updatedRow.Cells["Population"].Value)
+                                                    .Set(city => city.PopulationProper, updatedRow.Cells["PopulationProper"].Value);
+                this.collectionCities.UpdateOne(filter, update);
+            }
+            else if (currentCollectionName == "Shipwrecks")
+            {
+                var objectId = new ObjectId(id.ToString());
+
+                var filter = Builders<Shipwrecks>.Filter.Eq(shipwreck => shipwreck.Id, objectId);
+                var update = Builders<Shipwrecks>.Update.Set(shipwreck => shipwreck.Recrd, updatedRow.Cells["Recrd"].Value)
+                                                    .Set(shipwreck => shipwreck.Vesslterms, updatedRow.Cells["Vesslterms"].Value)
+                                                    .Set(shipwreck => shipwreck.FeatureType, updatedRow.Cells["FeatureType"].Value)
+                                                    .Set(shipwreck => shipwreck.Chart, updatedRow.Cells["Chart"].Value)
+                                                    .Set(shipwreck => shipwreck.GpQuality, updatedRow.Cells["GpQuality"].Value)
+                                                    .Set(shipwreck => shipwreck.History, updatedRow.Cells["History"].Value)
+                                                    .Set(shipwreck => shipwreck.Quasou, updatedRow.Cells["Quasou"].Value)
+                                                    .Set(shipwreck => shipwreck.Watlev, updatedRow.Cells["Watlev"].Value);
+                this.collectionShipwrecks.UpdateOne(filter, update);
+            }
             
             // Reading data grid values to get updated values
             this.ReadDataGrid();
@@ -121,7 +142,15 @@ namespace GeoSpatialData
             // Getting index of data grid row that is being deleted
             var updatedRow = e.Row;
             var id = updatedRow.Cells["Id"].Value;
-            this.collectionCities.DeleteOne(city => city.Id == id.ToString());
+
+            if (this.currentCollectionName == "Cities")
+            {
+                this.collectionCities.DeleteOne(city => city.Id == id.ToString());
+            }
+            else if (this.currentCollectionName == "Shipwrecks")
+            {
+                this.collectionShipwrecks.DeleteOne(shipwreck => shipwreck.Id.ToString() == id.ToString());
+            }
 
             // Reading data grid values to get updated values
             this.ReadDataGrid();
@@ -133,7 +162,17 @@ namespace GeoSpatialData
             var clickedRow = dataGrid.Rows[e.RowIndex];
             var lat = clickedRow.Cells["Lat"].Value;
             var lng = clickedRow.Cells["Lng"].Value;
+
             GMarkerGoogleType pin = GMarkerGoogleType.green_pushpin;
+
+            if (currentCollectionName == "Cities")
+            {
+                pin = GMarkerGoogleType.green_pushpin;
+            }
+            else if (currentCollectionName == "Shipwrecks")
+            {
+                pin = GMarkerGoogleType.yellow_dot;
+            }
             this.PlotPoint(lat.ToString(), lng.ToString(), pin);
         }
 
@@ -190,12 +229,29 @@ namespace GeoSpatialData
             string lng = item.Position.Lng.ToString();
 
             // Creating query to search mongo db collection for city with same lat and lng
-            var filter = Builders<Cities>.Filter.Eq(city => city.Lat, lat) & Builders<Cities>.Filter.Eq(city => city.Lng, lng);
-            var cityResult = this.collectionCities.Find(filter).FirstOrDefault();
-            if (cityResult != null)
+
+            if (currentCollectionName == "Cities")
             {
-                // Creating text box near pin displaying details
-                item.ToolTipText = cityResult.City.ToString();
+                var filter = Builders<Cities>.Filter.Eq(city => city.Lat, lat) & Builders<Cities>.Filter.Eq(city => city.Lng, lng);
+                var cityResult = this.collectionCities.Find(filter).FirstOrDefault();
+                if (cityResult != null)
+                {
+                    // Creating text box near pin displaying details
+                    item.ToolTipText = cityResult.City.ToString();
+                }
+            }
+            else if (currentCollectionName == "Shipwrecks")
+            {
+                // Parsing to double because it is stored as double in GeoJson
+                var latDouble = double.Parse(lat);
+                var lngDouble = double.Parse(lng);
+                var filter = Builders<Shipwrecks>.Filter.Eq(shipwreck => shipwreck.Lat, latDouble) & Builders<Shipwrecks>.Filter.Eq(Shipwreck => Shipwreck.Lng, lngDouble);
+                var shipwreckResult = this.collectionShipwrecks.Find(filter).FirstOrDefault();
+                if (shipwreckResult != null)
+                {
+                    // Creating text box near pin displaying details
+                    item.ToolTipText = shipwreckResult.FeatureType.ToString();
+                }
             }
         }
 
