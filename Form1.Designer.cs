@@ -36,6 +36,17 @@ namespace GeoSpatialData
             this.labelSearchInfo = new System.Windows.Forms.Label();
             this.buttonCities = new System.Windows.Forms.Button();
             this.buttonShipwrecks = new System.Windows.Forms.Button();
+            this.textBoxLat1 = new System.Windows.Forms.TextBox();
+            this.textBoxLat2 = new System.Windows.Forms.TextBox();
+            this.labelLat1 = new System.Windows.Forms.Label();
+            this.labelLat2 = new System.Windows.Forms.Label();
+            this.buttonCalculateDistance = new System.Windows.Forms.Button();
+            this.buttonResetCoords = new System.Windows.Forms.Button();
+            this.textBoxLng1 = new System.Windows.Forms.TextBox();
+            this.textBoxLng2 = new System.Windows.Forms.TextBox();
+            this.labelLng1 = new System.Windows.Forms.Label();
+            this.labelLng2 = new System.Windows.Forms.Label();
+            this.textBoxDistance = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.dataGrid)).BeginInit();
             this.SuspendLayout();
             // 
@@ -123,11 +134,113 @@ namespace GeoSpatialData
             this.buttonShipwrecks.UseVisualStyleBackColor = true;
             this.buttonShipwrecks.Click += new System.EventHandler(this.buttonShipwrecks_Click);
             // 
+            // textBoxLat1
+            // 
+            this.textBoxLat1.Location = new System.Drawing.Point(413, 318);
+            this.textBoxLat1.Name = "textBoxLat1";
+            this.textBoxLat1.Size = new System.Drawing.Size(90, 20);
+            this.textBoxLat1.TabIndex = 7;
+            // 
+            // textBoxLat2
+            // 
+            this.textBoxLat2.Location = new System.Drawing.Point(413, 355);
+            this.textBoxLat2.Name = "textBoxLat2";
+            this.textBoxLat2.Size = new System.Drawing.Size(90, 20);
+            this.textBoxLat2.TabIndex = 8;
+            // 
+            // labelLat1
+            // 
+            this.labelLat1.AutoSize = true;
+            this.labelLat1.Location = new System.Drawing.Point(410, 302);
+            this.labelLat1.Name = "labelLat1";
+            this.labelLat1.Size = new System.Drawing.Size(54, 13);
+            this.labelLat1.TabIndex = 9;
+            this.labelLat1.Text = "Latitude 1";
+            // 
+            // labelLat2
+            // 
+            this.labelLat2.AutoSize = true;
+            this.labelLat2.Location = new System.Drawing.Point(410, 341);
+            this.labelLat2.Name = "labelLat2";
+            this.labelLat2.Size = new System.Drawing.Size(54, 13);
+            this.labelLat2.TabIndex = 10;
+            this.labelLat2.Text = "Latitude 2";
+            // 
+            // buttonCalculateDistance
+            // 
+            this.buttonCalculateDistance.Location = new System.Drawing.Point(604, 355);
+            this.buttonCalculateDistance.Name = "buttonCalculateDistance";
+            this.buttonCalculateDistance.Size = new System.Drawing.Size(105, 23);
+            this.buttonCalculateDistance.TabIndex = 11;
+            this.buttonCalculateDistance.Text = "Calculate Distance";
+            this.buttonCalculateDistance.UseVisualStyleBackColor = true;
+            this.buttonCalculateDistance.Click += new System.EventHandler(this.buttonCalculateDistance_Click);
+            // 
+            // buttonResetCoords
+            // 
+            this.buttonResetCoords.Location = new System.Drawing.Point(604, 318);
+            this.buttonResetCoords.Name = "buttonResetCoords";
+            this.buttonResetCoords.Size = new System.Drawing.Size(105, 23);
+            this.buttonResetCoords.TabIndex = 12;
+            this.buttonResetCoords.Text = "Reset Coordinates";
+            this.buttonResetCoords.UseVisualStyleBackColor = true;
+            this.buttonResetCoords.Click += new System.EventHandler(this.buttonResetCoords_Click);
+            // 
+            // textBoxLng1
+            // 
+            this.textBoxLng1.Location = new System.Drawing.Point(508, 318);
+            this.textBoxLng1.Name = "textBoxLng1";
+            this.textBoxLng1.Size = new System.Drawing.Size(90, 20);
+            this.textBoxLng1.TabIndex = 13;
+            // 
+            // textBoxLng2
+            // 
+            this.textBoxLng2.Location = new System.Drawing.Point(508, 355);
+            this.textBoxLng2.Name = "textBoxLng2";
+            this.textBoxLng2.Size = new System.Drawing.Size(90, 20);
+            this.textBoxLng2.TabIndex = 14;
+            // 
+            // labelLng1
+            // 
+            this.labelLng1.AutoSize = true;
+            this.labelLng1.Location = new System.Drawing.Point(505, 302);
+            this.labelLng1.Name = "labelLng1";
+            this.labelLng1.Size = new System.Drawing.Size(63, 13);
+            this.labelLng1.TabIndex = 15;
+            this.labelLng1.Text = "Longitude 1";
+            // 
+            // labelLng2
+            // 
+            this.labelLng2.AutoSize = true;
+            this.labelLng2.Location = new System.Drawing.Point(505, 341);
+            this.labelLng2.Name = "labelLng2";
+            this.labelLng2.Size = new System.Drawing.Size(63, 13);
+            this.labelLng2.TabIndex = 16;
+            this.labelLng2.Text = "Longitude 2";
+            // 
+            // textBoxDistance
+            // 
+            this.textBoxDistance.Location = new System.Drawing.Point(413, 381);
+            this.textBoxDistance.Name = "textBoxDistance";
+            this.textBoxDistance.Size = new System.Drawing.Size(296, 20);
+            this.textBoxDistance.TabIndex = 17;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.textBoxDistance);
+            this.Controls.Add(this.labelLng2);
+            this.Controls.Add(this.labelLng1);
+            this.Controls.Add(this.textBoxLng2);
+            this.Controls.Add(this.textBoxLng1);
+            this.Controls.Add(this.buttonResetCoords);
+            this.Controls.Add(this.buttonCalculateDistance);
+            this.Controls.Add(this.labelLat2);
+            this.Controls.Add(this.labelLat1);
+            this.Controls.Add(this.textBoxLat2);
+            this.Controls.Add(this.textBoxLat1);
             this.Controls.Add(this.buttonShipwrecks);
             this.Controls.Add(this.buttonCities);
             this.Controls.Add(this.labelSearchInfo);
@@ -153,6 +266,17 @@ namespace GeoSpatialData
         private System.Windows.Forms.Label labelSearchInfo;
         private System.Windows.Forms.Button buttonCities;
         private System.Windows.Forms.Button buttonShipwrecks;
+        private System.Windows.Forms.TextBox textBoxLat1;
+        private System.Windows.Forms.TextBox textBoxLat2;
+        private System.Windows.Forms.Label labelLat1;
+        private System.Windows.Forms.Label labelLat2;
+        private System.Windows.Forms.Button buttonCalculateDistance;
+        private System.Windows.Forms.Button buttonResetCoords;
+        private System.Windows.Forms.TextBox textBoxLng1;
+        private System.Windows.Forms.TextBox textBoxLng2;
+        private System.Windows.Forms.Label labelLng1;
+        private System.Windows.Forms.Label labelLng2;
+        private System.Windows.Forms.TextBox textBoxDistance;
     }
 }
 

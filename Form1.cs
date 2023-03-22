@@ -95,6 +95,26 @@ namespace GeoSpatialData
 
         }
 
+        // This method calculates the distance between coordinates (Longitude and Latitude)
+        private double calculateDistanceBetweenCoords(double lat1, double lat2, double lng1, double lng2)
+        {
+            // Converting Coordinates from degrees to radians
+            var latDegrees = (lat2 - lat1) * Math.PI / 180;
+            var lngDegrees = (lng2 - lng1) * Math.PI / 180;
+
+            // Convert Latitude from degrees to Radians
+            lat1 = (lat1) * Math.PI / 180;
+            lat2 = (lat2) * Math.PI / 180;
+
+            // Haversine Formula to calculate
+            double a = Math.Sin(latDegrees / 2) * Math.Sin(latDegrees / 2) + Math.Sin(lngDegrees / 2) * Math.Sin(lngDegrees / 2)
+                  * Math.Cos(lat1) * Math.Cos(lat2);
+            double c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
+
+            // Multiply it by the Earths Radius in KM and return
+            return 6371 * c;
+        }
+
         // Update (CRUD)
         private void dataGrid_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
@@ -228,8 +248,19 @@ namespace GeoSpatialData
             string lat = item.Position.Lat.ToString();
             string lng = item.Position.Lng.ToString();
 
-            // Creating query to search mongo db collection for city with same lat and lng
+            // adding coords to coords text boxes on form (distance can be calculated with these)
+            if (textBoxLat1.Text == "" && textBoxLng1.Text == "")
+            {
+                textBoxLat1.Text = lat;
+                textBoxLng1.Text = lng;
+            }
+            else if (textBoxLat2.Text == "" && textBoxLng2.Text == "") 
+            {
+                textBoxLat2.Text = lat;
+                textBoxLng2.Text = lng;
+            }
 
+            // Creating query to search mongo db collection for city with same lat and lng
             if (currentCollectionName == "Cities")
             {
                 var filter = Builders<Cities>.Filter.Eq(city => city.Lat, lat) & Builders<Cities>.Filter.Eq(city => city.Lng, lng);
@@ -250,7 +281,7 @@ namespace GeoSpatialData
                 if (shipwreckResult != null)
                 {
                     // Creating text box near pin displaying details
-                    item.ToolTipText = shipwreckResult.FeatureType.ToString();
+                    item.ToolTipText = shipwreckResult.Chart.ToString();
                 }
             }
         }
@@ -276,8 +307,32 @@ namespace GeoSpatialData
             this.ReadDataGrid();
 
             buttonCities.BackColor = Color.White;
-            buttonShipwrecks.BackColor = Color.Green;
+            buttonShipwrecks.BackColor = Color.Yellow;
 
+        }
+
+        private void buttonResetCoords_Click(object sender, EventArgs e)
+        {
+            textBoxLat1.Text = "";
+            textBoxLat2.Text = "";
+            textBoxLng1.Text = "";
+            textBoxLng2.Text = "";
+        }
+
+        private void buttonCalculateDistance_Click(object sender, EventArgs e)
+        {
+            if (textBoxLat1.Text != "" && textBoxLat2.Text != "" && textBoxLng1.Text != "" && textBoxLng2.Text != "")
+            {
+                double lat1 = Double.Parse(textBoxLat1.Text);
+                double lng1 = Double.Parse(textBoxLng1.Text);
+                double lat2 = Double.Parse(textBoxLat2.Text);
+                double lng2 = Double.Parse(textBoxLng2.Text);
+
+                double calculatedDistance = this.calculateDistanceBetweenCoords(lat1, lng1, lat2, lng2);
+
+                textBoxDistance.Text = "Distance from coords 1 -> 2 = ";
+                textBoxDistance.Text += calculatedDistance.ToString();     
+            }
         }
     }
 }
