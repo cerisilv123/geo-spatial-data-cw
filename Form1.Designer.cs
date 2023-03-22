@@ -47,6 +47,8 @@ namespace GeoSpatialData
             this.labelLng1 = new System.Windows.Forms.Label();
             this.labelLng2 = new System.Windows.Forms.Label();
             this.textBoxDistance = new System.Windows.Forms.TextBox();
+            this.buttonAddCity = new System.Windows.Forms.Button();
+            this.buttonAddShipwreck = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGrid)).BeginInit();
             this.SuspendLayout();
             // 
@@ -91,7 +93,7 @@ namespace GeoSpatialData
             // 
             // buttonSearchCity
             // 
-            this.buttonSearchCity.Location = new System.Drawing.Point(604, 257);
+            this.buttonSearchCity.Location = new System.Drawing.Point(604, 269);
             this.buttonSearchCity.Name = "buttonSearchCity";
             this.buttonSearchCity.Size = new System.Drawing.Size(75, 23);
             this.buttonSearchCity.TabIndex = 2;
@@ -101,7 +103,7 @@ namespace GeoSpatialData
             // 
             // textBoxSearchCity
             // 
-            this.textBoxSearchCity.Location = new System.Drawing.Point(413, 260);
+            this.textBoxSearchCity.Location = new System.Drawing.Point(413, 271);
             this.textBoxSearchCity.Name = "textBoxSearchCity";
             this.textBoxSearchCity.Size = new System.Drawing.Size(185, 20);
             this.textBoxSearchCity.TabIndex = 3;
@@ -225,11 +227,32 @@ namespace GeoSpatialData
             this.textBoxDistance.Size = new System.Drawing.Size(296, 20);
             this.textBoxDistance.TabIndex = 17;
             // 
+            // buttonAddCity
+            // 
+            this.buttonAddCity.Location = new System.Drawing.Point(616, 7);
+            this.buttonAddCity.Name = "buttonAddCity";
+            this.buttonAddCity.Size = new System.Drawing.Size(75, 23);
+            this.buttonAddCity.TabIndex = 18;
+            this.buttonAddCity.Text = "Add City";
+            this.buttonAddCity.UseVisualStyleBackColor = true;
+            this.buttonAddCity.Click += new System.EventHandler(this.buttonAddCity_Click);
+            // 
+            // buttonAddShipwreck
+            // 
+            this.buttonAddShipwreck.Location = new System.Drawing.Point(697, 7);
+            this.buttonAddShipwreck.Name = "buttonAddShipwreck";
+            this.buttonAddShipwreck.Size = new System.Drawing.Size(95, 23);
+            this.buttonAddShipwreck.TabIndex = 19;
+            this.buttonAddShipwreck.Text = "Add Shipwreck";
+            this.buttonAddShipwreck.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.buttonAddShipwreck);
+            this.Controls.Add(this.buttonAddCity);
             this.Controls.Add(this.textBoxDistance);
             this.Controls.Add(this.labelLng2);
             this.Controls.Add(this.labelLng1);
@@ -277,6 +300,8 @@ namespace GeoSpatialData
         private System.Windows.Forms.Label labelLng1;
         private System.Windows.Forms.Label labelLng2;
         private System.Windows.Forms.TextBox textBoxDistance;
+        private System.Windows.Forms.Button buttonAddCity;
+        private System.Windows.Forms.Button buttonAddShipwreck;
     }
 }
 

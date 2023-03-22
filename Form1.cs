@@ -375,5 +375,34 @@ namespace GeoSpatialData
                 Map.UpdateRouteLocalPosition(route);
             }
         }
+
+        // Opens up form to add city
+        private void buttonAddCity_Click(object sender, EventArgs e)
+        {
+            // Event and delegate
+            FormAddCity formAddCity = new FormAddCity();
+            formAddCity.Show();
+
+            // When visibility is changed in formAddCity 'formVisibleChanged' is triggered
+            formAddCity.VisibleChanged += formVisibleChanged;
+        }
+
+        private void formVisibleChanged(object sender, EventArgs e)
+        {
+            // Creating Cities object and posting to mongodb
+            FormAddCity formAddCity = (FormAddCity)sender;
+            if (!formAddCity.Visible)
+            {
+                string city = formAddCity.city;
+                string lat = formAddCity.lat;
+                string lng = formAddCity.lng;
+                var newCity = new Cities { City = city, Lat = lat, Lng = lng };
+                collectionCities.InsertOne(newCity);
+
+                // Refreshing grid
+                this.ReadDataGrid();
+            }
+        
+        }
     }
 }
