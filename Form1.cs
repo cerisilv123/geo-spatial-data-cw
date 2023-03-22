@@ -20,12 +20,13 @@ namespace GeoSpatialData
         // DB Connections Strings
         string connectionString;
         string databaseName;
-        string collectionNameCities;
+        string currentCollectionName;
 
         // Database Objects
         MongoClient client;
         IMongoDatabase db;
         IMongoCollection<Cities> collectionCities;
+        IMongoCollection<Shipwrecks> collectionShipwrecks;
 
         // Data Grid
         BindingSource bindingSource;
@@ -46,12 +47,12 @@ namespace GeoSpatialData
             // MongoDB Database Details(Atlas)
             this.connectionString = "mongodb+srv://30023073cj:5GXnLBHVkjpKEokB@cluster30023073.fxc3oi1.mongodb.net/?retryWrites=true&w=majority";
             this.databaseName = "30023073-db-cw";
-            this.collectionNameCities = "Cities";
+            this.currentCollectionName = "Cities";
 
             // Initialising DB objects
             this.client = new MongoClient(this.connectionString);
             this.db = client.GetDatabase(this.databaseName);
-            this.collectionCities = db.GetCollection<Cities>(this.collectionNameCities);
+            this.collectionCities = db.GetCollection<Cities>(this.currentCollectionName);
 
             // Reading data grid values to get updated values
             this.ReadDataGrid();
@@ -79,8 +80,17 @@ namespace GeoSpatialData
             dataGrid.DataSource = this.bindingSource;
 
             // Getting all results from collection and binding to data grid
-            var results = this.collectionCities.Find<Cities>(Builders<Cities>.Filter.Empty).ToList();
-            this.bindingSource.DataSource = results;
+            if (this.currentCollectionName == "Cities")
+            {
+                var results = this.collectionCities.Find<Cities>(Builders<Cities>.Filter.Empty).ToList();
+                this.bindingSource.DataSource = results;
+            }
+            else if (this.currentCollectionName == "Shipwrecks")
+            {
+                var results = this.collectionShipwrecks.Find<Shipwrecks>(Builders<Shipwrecks>.Filter.Empty).ToList();
+                this.bindingSource.DataSource = results;
+            }
+
         }
 
         // Update (CRUD)
@@ -187,6 +197,31 @@ namespace GeoSpatialData
                 // Creating text box near pin displaying details
                 item.ToolTipText = cityResult.City.ToString();
             }
+        }
+
+        private void buttonCities_Click(object sender, EventArgs e)
+        {
+            this.currentCollectionName = "Cities";
+            this.collectionCities = db.GetCollection<Cities>(this.currentCollectionName);
+
+            // Reading data grid values to get updated values
+            this.ReadDataGrid();
+
+            buttonCities.BackColor = Color.Green;
+            buttonShipwrecks.BackColor = Color.White;
+        }
+
+        private void buttonShipwrecks_Click(object sender, EventArgs e)
+        {
+            this.currentCollectionName = "Shipwrecks";
+            this.collectionShipwrecks = db.GetCollection<Shipwrecks>(this.currentCollectionName);
+
+            // Reading data grid values to get updated values
+            this.ReadDataGrid();
+
+            buttonCities.BackColor = Color.White;
+            buttonShipwrecks.BackColor = Color.Green;
+
         }
     }
 }

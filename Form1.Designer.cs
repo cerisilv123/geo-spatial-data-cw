@@ -34,6 +34,8 @@ namespace GeoSpatialData
             this.buttonSearchCity = new System.Windows.Forms.Button();
             this.textBoxSearchCity = new System.Windows.Forms.TextBox();
             this.labelSearchInfo = new System.Windows.Forms.Label();
+            this.buttonCities = new System.Windows.Forms.Button();
+            this.buttonShipwrecks = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGrid)).BeginInit();
             this.SuspendLayout();
             // 
@@ -68,7 +70,7 @@ namespace GeoSpatialData
             // dataGrid
             // 
             this.dataGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGrid.Location = new System.Drawing.Point(413, 12);
+            this.dataGrid.Location = new System.Drawing.Point(413, 36);
             this.dataGrid.Name = "dataGrid";
             this.dataGrid.Size = new System.Drawing.Size(379, 218);
             this.dataGrid.TabIndex = 1;
@@ -78,7 +80,7 @@ namespace GeoSpatialData
             // 
             // buttonSearchCity
             // 
-            this.buttonSearchCity.Location = new System.Drawing.Point(604, 239);
+            this.buttonSearchCity.Location = new System.Drawing.Point(604, 257);
             this.buttonSearchCity.Name = "buttonSearchCity";
             this.buttonSearchCity.Size = new System.Drawing.Size(75, 23);
             this.buttonSearchCity.TabIndex = 2;
@@ -88,7 +90,7 @@ namespace GeoSpatialData
             // 
             // textBoxSearchCity
             // 
-            this.textBoxSearchCity.Location = new System.Drawing.Point(413, 239);
+            this.textBoxSearchCity.Location = new System.Drawing.Point(413, 260);
             this.textBoxSearchCity.Name = "textBoxSearchCity";
             this.textBoxSearchCity.Size = new System.Drawing.Size(185, 20);
             this.textBoxSearchCity.TabIndex = 3;
@@ -101,11 +103,33 @@ namespace GeoSpatialData
             this.labelSearchInfo.Size = new System.Drawing.Size(0, 13);
             this.labelSearchInfo.TabIndex = 4;
             // 
+            // buttonCities
+            // 
+            this.buttonCities.Location = new System.Drawing.Point(413, 7);
+            this.buttonCities.Name = "buttonCities";
+            this.buttonCities.Size = new System.Drawing.Size(75, 23);
+            this.buttonCities.TabIndex = 5;
+            this.buttonCities.Text = "Cities";
+            this.buttonCities.UseVisualStyleBackColor = true;
+            this.buttonCities.Click += new System.EventHandler(this.buttonCities_Click);
+            // 
+            // buttonShipwrecks
+            // 
+            this.buttonShipwrecks.Location = new System.Drawing.Point(494, 7);
+            this.buttonShipwrecks.Name = "buttonShipwrecks";
+            this.buttonShipwrecks.Size = new System.Drawing.Size(75, 23);
+            this.buttonShipwrecks.TabIndex = 6;
+            this.buttonShipwrecks.Text = "Shipwrecks";
+            this.buttonShipwrecks.UseVisualStyleBackColor = true;
+            this.buttonShipwrecks.Click += new System.EventHandler(this.buttonShipwrecks_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.buttonShipwrecks);
+            this.Controls.Add(this.buttonCities);
             this.Controls.Add(this.labelSearchInfo);
             this.Controls.Add(this.textBoxSearchCity);
             this.Controls.Add(this.buttonSearchCity);
@@ -127,6 +151,8 @@ namespace GeoSpatialData
         private System.Windows.Forms.Button buttonSearchCity;
         private System.Windows.Forms.TextBox textBoxSearchCity;
         private System.Windows.Forms.Label labelSearchInfo;
+        private System.Windows.Forms.Button buttonCities;
+        private System.Windows.Forms.Button buttonShipwrecks;
     }
 }
 
