@@ -155,7 +155,7 @@ namespace GeoSpatialData
                                                     .Set(shipwreck => shipwreck.Watlev, updatedRow.Cells["Watlev"].Value);
                 this.collectionShipwrecks.UpdateOne(filter, update);
             }
-            
+
             // Reading data grid values to get updated values
             this.ReadDataGrid();
         }
@@ -215,7 +215,7 @@ namespace GeoSpatialData
 
                 // Updating datagrid to have the correct city selected for what user searched
                 int index = -1;
-                foreach(DataGridViewRow row in dataGrid.Rows)
+                foreach (DataGridViewRow row in dataGrid.Rows)
                 {
                     if (row.Cells[2].Value.ToString() == lat && row.Cells[3].Value.ToString() == lng)
                     {
@@ -258,7 +258,7 @@ namespace GeoSpatialData
                 textBoxLat1.Text = lat;
                 textBoxLng1.Text = lng;
             }
-            else if (textBoxLat2.Text == "" && textBoxLng2.Text == "") 
+            else if (textBoxLat2.Text == "" && textBoxLng2.Text == "")
             {
                 textBoxLat2.Text = lat;
                 textBoxLng2.Text = lng;
@@ -379,16 +379,34 @@ namespace GeoSpatialData
         // Opens up form to add city
         private void buttonAddCity_Click(object sender, EventArgs e)
         {
+            buttonAddCity.BackColor = Color.Tan;
+
             // Event and delegate
             FormAddCity formAddCity = new FormAddCity();
             formAddCity.Show();
 
             // When visibility is changed in formAddCity 'formVisibleChanged' is triggered
-            formAddCity.VisibleChanged += formVisibleChanged;
+            formAddCity.VisibleChanged += formVisibleChangedCity;
+            formAddCity.FormClosed += formClosed;
         }
 
-        private void formVisibleChanged(object sender, EventArgs e)
+        private void buttonAddShipwreck_Click(object sender, EventArgs e)
         {
+            buttonAddShipwreck.BackColor = Color.Tan;
+
+            // Event and delegate
+            FormAddShipwreck formAddShipwreck = new FormAddShipwreck();
+            formAddShipwreck.Show();
+
+            // When visibility is changed in formAddShipwreck 'formVisibleChanged' is triggered
+            formAddShipwreck.VisibleChanged += formVisibleChangedShipwreck;
+            formAddShipwreck.FormClosed += formClosed;
+        }
+
+        private void formVisibleChangedCity(object sender, EventArgs e)
+        {
+            buttonAddCity.BackColor = Color.White;
+
             // Creating Cities object and posting to mongodb
             FormAddCity formAddCity = (FormAddCity)sender;
             if (!formAddCity.Visible)
@@ -397,12 +415,41 @@ namespace GeoSpatialData
                 string lat = formAddCity.lat;
                 string lng = formAddCity.lng;
                 var newCity = new Cities { City = city, Lat = lat, Lng = lng };
-                collectionCities.InsertOne(newCity);
+                this.collectionCities.InsertOne(newCity);
 
                 // Refreshing grid
                 this.ReadDataGrid();
             }
-        
+
+        }
+
+        private void formVisibleChangedShipwreck(object sender, EventArgs e)
+        {
+            buttonAddShipwreck.BackColor = Color.White;
+
+            // Creating Cities object and posting to mongodb
+            FormAddShipwreck formAddShipwreck = (FormAddShipwreck)sender;
+            if (!formAddShipwreck.Visible)
+            {
+                // Retreiving values from formAddShipwreck class
+                string chart = formAddShipwreck.chart;
+                string lat = formAddShipwreck.lat;
+                string lng = formAddShipwreck.lng;
+
+                // Creating document in DB
+                var tempCollectionShipwrecks = this.db.GetCollection<BsonDocument>("Shipwrecks");
+                var shipwreck = new BsonDocument { { "chart", chart }, { "latdec", lat }, { "londec", lng } };
+                tempCollectionShipwrecks.InsertOne(shipwreck);
+
+                // Refreshing grid
+                this.ReadDataGrid();
+            }
+        }
+        private void formClosed(object sender, EventArgs e)
+        {
+            // When the form is closed -> buttons colors are set to default
+            buttonAddCity.BackColor = Color.White;
+            buttonAddShipwreck.BackColor = Color.White;
         }
     }
 }

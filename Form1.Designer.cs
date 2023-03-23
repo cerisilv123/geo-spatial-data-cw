@@ -245,6 +245,7 @@ namespace GeoSpatialData
             this.buttonAddShipwreck.TabIndex = 19;
             this.buttonAddShipwreck.Text = "Add Shipwreck";
             this.buttonAddShipwreck.UseVisualStyleBackColor = true;
+            this.buttonAddShipwreck.Click += new System.EventHandler(this.buttonAddShipwreck_Click);
             // 
             // Form1
             // 
