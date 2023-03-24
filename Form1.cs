@@ -481,5 +481,24 @@ namespace GeoSpatialData
             buttonAddCity.BackColor = Color.White;
             buttonAddShipwreck.BackColor = Color.White;
         }
+
+        private void buttonUserGuide_Click(object sender, EventArgs e)
+        {
+            // Creating instructions
+
+            string instructions = "User Guide: \n";
+            instructions += "\n";
+            instructions += "1) Click on data grid rows to add them as pins on the map \n";
+            instructions += "2) Double click a pin to remove it from the map \n";
+            instructions += "3) Single click a pin to display the data 'name' \n";
+            instructions += "4) When a pin is clicked the coordinates get added below the grid, you can calculate the distance by clicking 'calculate distance'\n";
+            instructions += "5) Reset coordinates by clicking 'reset coordinates' \n";
+            instructions += "6) When a data grid row is clicked it gets added to the relevant bar chart \n";
+            instructions += "7) You can search for the relevant city on the map by typing the city name in to the search bar \n";
+            instructions += "8) Click Add City to add a city to the database and datagrid \n";
+            instructions += "9) Click Add Shipwreck to add a shipwreck to the database and datagrid \n";
+
+            MessageBox.Show(instructions);
+        }
     }
 }
