@@ -14,6 +14,7 @@ using GMap.NET.WindowsForms;
 using GMap.NET.WindowsForms.ToolTips;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using System.Windows.Forms.DataVisualization.Charting;
 
 namespace GeoSpatialData
 {
@@ -36,6 +37,10 @@ namespace GeoSpatialData
         // Map
         GMapOverlay mapRouteOverlay;
 
+        // Charts
+        Series populationSeries;
+        Series depthSeries;
+
         public Form1()
         {
             InitializeComponent();
@@ -48,6 +53,7 @@ namespace GeoSpatialData
             GMaps.Instance.Mode = AccessMode.ServerOnly;
             Map.AutoSize = true;
             Map.ShowCenter = false;
+            Map.Zoom = 5;
 
             // MongoDB Database Details(Atlas)
             this.connectionString = "mongodb+srv://30023073cj:5GXnLBHVkjpKEokB@cluster30023073.fxc3oi1.mongodb.net/?retryWrites=true&w=majority";
@@ -62,6 +68,14 @@ namespace GeoSpatialData
             // Reading data grid values to get updated values
             this.ReadDataGrid();
             buttonCities.BackColor = Color.Green;
+
+            // Chart
+            this.populationSeries = chartCityPopulation.Series.Add("city population");
+            this.populationSeries.Color = Color.Green;
+            this.depthSeries = chartShipwreckDepth.Series.Add("shipwreck depth");
+            this.depthSeries.Color = Color.Yellow;
+
+            buttonUserGuide.BackColor = Color.Coral;
         }
 
         // Plots Point on to Map
@@ -75,6 +89,8 @@ namespace GeoSpatialData
                     pin);
             markers.Markers.Add(marker);
             Map.Overlays.Add(markers);
+
+            // Refreshing map
             Map.ZoomAndCenterMarkers("markers");
         }
 
@@ -192,10 +208,24 @@ namespace GeoSpatialData
             if (currentCollectionName == "Cities")
             {
                 pin = GMarkerGoogleType.green_dot;
+
+                // Updating Chart
+                string population = clickedRow.Cells["Population"].Value.ToString();
+                string city = clickedRow.Cells["City"].Value.ToString();
+                this.populationSeries.Points.AddXY(city, Double.Parse(population));
+                chartCityPopulation.Invalidate();
+                chartCityPopulation.Update();
             }
             else if (currentCollectionName == "Shipwrecks")
             {
                 pin = GMarkerGoogleType.yellow_dot;
+
+                // Updating Chart
+                string depth = clickedRow.Cells["Depth"].Value.ToString();
+                string chart = clickedRow.Cells["Chart"].Value.ToString();
+                this.depthSeries.Points.AddXY(chart, Double.Parse(depth));
+                chartShipwreckDepth.Invalidate();
+                chartShipwreckDepth.Update();
             }
             this.PlotPoint(lat.ToString(), lng.ToString(), pin);
         }
